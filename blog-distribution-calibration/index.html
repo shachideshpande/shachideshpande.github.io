@@ -2,19 +2,19 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="description" content="Exploring Distribution Calibration for deep learning models to achieve accurate and sharp probabilistic predictions.">
-  <meta property="og:title" content="Distribution Calibration: Accurate & Sharp Uncertainties in Deep Learning"/>
-  <meta property="og:description" content="A method for improving the reliability of probabilistic predictions from machine learning models through distribution recalibration."/>
+  <meta name="description" content="Exploring Distribution Calibration for deep learning models using the DistCal library to achieve accurate and sharp probabilistic predictions.">
+  <meta property="og:title" content="Distribution Calibration: Accurate & Sharp Uncertainties with DistCal"/>
+  <meta property="og:description" content="Learn to improve the reliability of probabilistic predictions from ML models through distribution recalibration using the DistCal library. From the authors of the ICML 2022 paper.">
   <meta property="og:url" content="https://shachideshpande.github.io/blog-distribution-calibration/"/> <meta property="og:image" content="static/image/your_banner_image.png" /> <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="630"/>
 
-  <meta name="twitter:title" content="Distribution Calibration: Accurate & Sharp Uncertainties">
-  <meta name="twitter:description" content="Improving reliability of ML model predictions with distribution recalibration.">
+  <meta name="twitter:title" content="Distribution Calibration: Accurate & Sharp Uncertainties with DistCal">
+  <meta name="twitter:description" content="Using the DistCal library to improve reliability of ML model predictions.">
   <meta name="twitter:image" content="static/images/your_twitter_banner_image.png"> <meta name="twitter:card" content="summary_large_image">
-  <meta name="keywords" content="Distribution Calibration, Deep Learning, Uncertainty Quantification, Machine Learning, Probabilistic Predictions, Recalibration, Density Estimation, ICML 2022">
+  <meta name="keywords" content="DistCal, Distribution Calibration, Deep Learning, Uncertainty Quantification, Machine Learning, Probabilistic Predictions, Recalibration, Density Estimation, ICML 2022, torchuq">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Distribution Calibration</title>
+  <title>Distribution Calibration with DistCal</title>
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
   rel="stylesheet">
 
@@ -30,7 +30,8 @@
   <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
   <script defer src="static/js/fontawesome.all.min.js"></script>
   <script src="static/js/bulma-carousel.min.js"></script>
-  <script src="static/js/bulma-slider.min.js"></script>
+  <script src
+="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js"></script>
 </head>
 <body>
@@ -51,11 +52,11 @@
 
             <div class="is-size-5 publication-authors">
               <span class="author-block">ICML 2022</span>
-              </div>
+            </div>
 
             <div class="column has-text-centered">
               <div class="publication-links">
-                   <span class="link-block">
+                <span class="link-block">
                   <a href="https://proceedings.mlr.press/v162/kuleshov22a/kuleshov22a.pdf" target="_blank"
                   class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
@@ -64,7 +65,6 @@
                   <span>Paper (PMLR)</span>
                 </a>
               </span>
-
               <span class="link-block">
                 <a href="https://arxiv.org/abs/2112.07184" target="_blank"
                 class="external-link button is-normal is-rounded is-dark">
@@ -74,13 +74,13 @@
                 <span>arXiv</span>
               </a>
             </span>
-
             <span class="link-block">
-              <a href="https://github.com/shachideshpande/DistCal" target="_blank" class="external-link button is-normal is-rounded is-dark">
+              <a href="https://github.com/shachideshpande/DistCal" target="_blank" 
+              class="external-link button is-normal is-rounded is-dark">
               <span class="icon">
                 <i class="fab fa-github"></i>
               </span>
-              <span>Code</span>
+              <span>Code (DistCal)</span>
             </a>
           </span>
           </div>
@@ -105,98 +105,152 @@
     </div>
   </div>
 </section>
+
 <section class="section">
   <div class="container is-max-desktop">
     <div class="columns is-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">The Essence of Distribution Recalibration</h2>
+        <h2 class="title is-3">The Importance of Being Calibrated</h2>
         <div class="content has-text-justified">
           <p>
-            The predictive uncertainty of machine learning models, particularly deep neural networks, is often miscalibrated. For instance, a 90% prediction interval from a standard maximum likelihood-trained model may not contain the true outcome with the claimed 90% frequency. This discrepancy between nominal and empirical coverage poses risks in safety-critical applications where reliable uncertainty quantification is paramount.
+            An accurate probabilistic forecast from a machine learning model should be both <strong>calibrated</strong> and <strong>sharp</strong>. Calibration means that if a model predicts a 90% confidence interval, the true outcome should indeed fall within that interval 90% of the time. Sharpness refers to how narrow or concentrated these intervals are. Unfortunately, standard training methods, like maximum likelihood, often result in models that are poorly calibrated – their confidence levels don't match real-world probabilities. This is a critical issue in fields like medicine or autonomous systems where decisions rely on trustworthy uncertainty estimates. Our work, implemented in the <a href="https://github.com/shachideshpande/DistCal" target="_blank">DistCal</a> library, demonstrates that achieving calibration is practical and can be done by performing low-dimensional density estimation.
           </p>
           <p>
-            Effective probabilistic forecasting necessitates two fundamental properties: <strong>calibration</strong>, ensuring that predicted probabilities align with observed outcome frequencies, and <strong>sharpness</strong>, indicating the concentration of predictive distributions. Our research addresses the challenge of achieving robust calibration without compromising model performance.
+            While several notions of calibration exist, <em>quantile calibration</em> ensures that specific predicted quantiles (e.g., the $p$-th quantile) match empirical observations. A stronger, more comprehensive notion is <em>distribution calibration</em>, which requires that the entire predicted probability distribution $F(y)$ matches the true conditional distribution of outcomes $P(Y=y | F_X=F)$. Our DistCal library focuses on achieving this robust distribution calibration.
+          </p>
+        </div>
+
+        <h2 class="title is-3 mt-5">Our Approach: Recalibration as Density Estimation</h2>
+        <div class="content has-text-justified">
+          <p>
+            The core idea behind DistCal is to treat recalibration as a density estimation problem. Given a base model $H$ that produces forecasts $F_x = H(x)$, we aim to learn a recalibration model $R$ such that the composite model $R \circ H$ is distribution-calibrated. This is achieved by training $R$ to estimate the true conditional probability $P(Y | H(X)=F)$.
           </p>
           <p>
-            We introduce a novel <strong>distribution recalibration</strong> methodology, applicable to any pre-trained predictive model. This technique reframes recalibration as a low-dimensional density estimation problem. Specifically, an auxiliary recalibration model is trained to map features of the base model's forecasts (e.g., its quantiles or parametric representations) to a calibrated predictive distribution. This process targets <em>distribution calibration</em>, a comprehensive form of calibration ensuring that the entire predictive distribution, not merely specific quantiles or moments, is well-calibrated.
+            To make this tractable, we first define a featurization $\phi(F_x)$ that represents the original forecast $F_x$ with a low-dimensional vector (e.g., using its quantiles). The recalibrator $R$ then learns the mapping from these features $\phi(F_x)$ to a calibrated distribution over $Y$. This learning process minimizes a proper scoring rule on a dedicated calibration dataset.
           </p>
           <p>
-            Our theoretical analysis establishes the correctness of this procedure, contingent on accurate low-dimensional density estimation, and provides uniform convergence bounds. Empirical evaluations demonstrate significant improvements in calibration for both linear and deep Bayesian models across various benchmarks. The proposed framework offers a practical and effective means to enhance the reliability of probabilistic forecasts, advocating for the broader adoption of calibration techniques in machine learning.
+            This general framework (Algorithm 1 in our paper) is then specialized:
+          </p>
+          <ul>
+            <li><strong>For Regression (Continuous Outcomes):</strong> We train $R$ to model the calibrated quantile function (QF), $Q(\tau | \phi(F_x))$, which gives the $\tau$-th quantile of the calibrated distribution. The features $\phi(F_x)$ are typically quantiles from the original model $H$. $R$ is trained using a quantile loss (check score). (Algorithm 2 in our paper).</li>
+            <li><strong>For Classification (Discrete Outcomes):</strong> The forecast $F_x$ is a vector of class probabilities. $R$ learns a mapping from these input probabilities to calibrated output probabilities, typically by minimizing the log-loss. (Algorithm 3 in our paper).</li>
+          </ul>
+          <p>
+            Compared to previous methods, our approach is simpler, more broadly applicable (e.g., not limited to Gaussian outputs), and directly targets the strong notion of distribution calibration.
           </p>
         </div>
       </div>
     </div>
   </div>
 </section>
+
 <section class="section hero is-light">
   <div class="container is-max-desktop">
     <div class="columns is-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Conceptual Demo: Distribution Calibration in Action</h2>
+        <h2 class="title is-3">Using DistCal: Code Examples</h2>
         <div class="content">
-          <p>This concise demo illustrates how pre-trained distribution calibrators can be applied to both discrete (classification) and continuous (regression) model outputs. It conceptualizes the usage of calibrators similar to those in the <code>DistCal</code> library, which would first be trained on a dedicated calibration dataset.</p>
+          <p>The following Python snippets demonstrate how to use the core calibrators from our <code>DistCal</code> library. To run these examples, you'll need <code>torch</code> and the <code>torchuq</code> package (which is part of the DistCal repository; ensure it's installed or your <code>PYTHONPATH</code> is set up accordingly, e.g., by following the setup instructions in the DistCal repository).</p>
+          
+          <h3 class="title is-4 mt-5">1. Discrete Distribution Calibration (Classification)</h3>
+          <p>This example shows how to use <code>DiscreteDistCalibrator</code> for multi-class classification outputs.</p>
           <pre><code class="language-python">
-import numpy as np
+import torch
+# Ensure DistCal library (providing torchuq) is installed and in PYTHONPATH
+# For example, if DistCal is cloned, you might need:
+# import sys; sys.path.append('../path/to/DistCal/parent_directory') 
+from torchuq.transform.distcal_discrete import DiscreteDistCalibrator
 
-# --- Mock Uncalibrated Predictions from a Base Model ---
-# For a new test point:
-# Discrete (Classification): uncalibrated class probabilities (e.g., 3 classes)
-uncal_discrete_probs = np.array([[0.65, 0.25, 0.10]])
-# Continuous (Regression): uncalibrated quantiles (e.g., 0.1, 0.5, 0.9 levels)
-uncal_continuous_quantiles = np.array([[1.8, 2.9, 4.2]])
+# --- DiscreteDistCalibrator Example ---
 
-# --- Placeholder Pre-Trained Calibrator Functions ---
-# These simulate applying calibrators from the 'DistCal' library
-# after they have been trained.
+# 1. Mock uncalibrated predictions (probabilities) & labels from a calibration set
+#    These would come from your base classification model.
+#    Format: (num_samples, num_classes)
+probs_cal_discrete = torch.tensor([[0.7, 0.2, 0.1], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], dtype=torch.float32)
+labels_cal_discrete = torch.tensor([0, 1, 2], dtype=torch.long) # True class labels
 
-def apply_discrete_calibrator(uncal_probs):
-    """Simulates applying a trained discrete distribution calibrator."""
-    print(f"Input discrete probabilities: {uncal_probs}")
-    # Example recalibration: slightly adjust and re-normalize
-    # A real calibrator learns a more complex transformation.
-    adjusted_probs = uncal_probs + np.array([[0.02, -0.01, -0.01]]) # Small learned shift
-    calibrated_probs = np.clip(adjusted_probs, 0.001, 0.999) # Ensure valid probs
-    calibrated_probs = calibrated_probs / np.sum(calibrated_probs, axis=1, keepdims=True)
-    return calibrated_probs
+# 2. Initialize and train the discrete calibrator on the calibration set
+discrete_calibrator = DiscreteDistCalibrator() 
+print("Training DiscreteDistCalibrator...")
+discrete_calibrator.train(probs_cal_discrete, labels_cal_discrete)
+print("Discrete calibrator training complete.")
 
-def apply_continuous_calibrator(uncal_quantiles):
-    """Simulates applying a trained continuous distribution calibrator."""
-    print(f"Input continuous quantiles: {uncal_quantiles}")
-    # Example recalibration: adjust median and spread
-    # A real calibrator learns this based on phi(F) and tau.
-    # Here, phi(F) are the uncal_quantiles themselves.
-    # Let's say it learns to shift the median (middle quantile) slightly
-    # and adjust the outer quantiles to change the spread.
-    calibrated_q = uncal_quantiles.copy()
-    calibrated_q[0, 1] += 0.05 # Shift median
-    calibrated_q[0, 0] -= 0.1  # Expand lower tail
-    calibrated_q[0, 2] += 0.1  # Expand upper tail
-    return calibrated_q
+# 3. Apply the trained calibrator to new uncalibrated probabilities (e.g., for test data)
+probs_new_discrete = torch.tensor([[0.6, 0.3, 0.1]], dtype=torch.float32)
+calibrated_probs_new = discrete_calibrator(probs_new_discrete)
 
-# --- Applying Discrete Calibration ---
-calibrated_discrete = apply_discrete_calibrator(uncal_discrete_probs)
-print(f"Calibrated discrete probabilities: {np.round(calibrated_discrete, 3)}\n")
-
-# --- Applying Continuous Calibration ---
-calibrated_continuous = apply_continuous_calibrator(uncal_continuous_quantiles)
-print(f"Calibrated continuous quantiles: {np.round(calibrated_continuous, 3)}")
-
-# Note: The actual 'DistCal' library (using torchuq) provides classes like
-# 'DiscreteDistCalibrator' and 'DistCalibrator'. These would be instantiated,
-# then trained on calibration data (e.g., discrete_cal.train(cal_probs, cal_labels)),
-# before being called on new data (e.g., calibrated_output = discrete_cal(new_probs)).
-# This demo focuses on the conceptual application post-training.
+print("\n--- Discrete Calibration Results (Example) ---")
+print(f"Uncalibrated Test Probs: {probs_new_discrete.numpy()}")
+print(f"Calibrated Test Probs:   {calibrated_probs_new.detach().numpy().round(3)}")
           </code></pre>
-          <p>This example shows how, after training, a discrete calibrator adjusts class probabilities, and a continuous calibrator adjusts predicted quantiles to provide more reliable uncertainty estimates.</p>
+
+          <h3 class="title is-4 mt-5">2. Continuous Distribution Calibration (Regression)</h3>
+          <p>This example shows how to use <code>DistCalibrator</code> for continuous regression outputs, assuming your base model provides quantiles as its predictive distribution.</p>
+          <pre><code class="language-python">
+import torch
+# Ensure DistCal library (providing torchuq) is installed and in PYTHONPATH
+from torchuq.transform.distcal_continuous import DistCalibrator
+# Note: If your base model outputs mean/std of a Gaussian, you might use
+# `convert_normal_to_quantiles` from `torchuq.transform.calibrate` 
+# to get the initial uncalibrated quantiles. This demo assumes quantiles are inputs.
+
+# --- DistCalibrator Example (Continuous) ---
+
+# 1. Mock uncalibrated predictions (quantiles) & true values from a calibration set
+#    These quantiles would come from your base regression model.
+#    Format: (num_samples, num_quantiles) - e.g., 5 quantiles like [0.1,0.3,0.5,0.7,0.9]
+quantiles_cal_continuous = torch.tensor([[1.0, 1.5, 2.0, 2.5, 3.0], 
+                                       [2.0, 2.8, 3.5, 4.2, 5.0]], dtype=torch.float32)
+values_cal_continuous = torch.tensor([2.1, 3.3], dtype=torch.float32) # True continuous values
+
+# 2. Initialize and train the continuous calibrator on the calibration set
+#    'quantile_input=True' indicates the model receives quantiles.
+#    'num_buckets' should match the number of input/output quantiles.
+continuous_calibrator = DistCalibrator(num_buckets=5, quantile_input=True)
+print("\nTraining DistCalibrator (Continuous)...")
+# num_epochs can be adjusted; fewer for a quick demo.
+continuous_calibrator.train(quantiles_cal_continuous, values_cal_continuous, num_epochs=5) 
+print("Continuous calibrator training complete.")
+
+# 3. Apply the trained calibrator to new uncalibrated quantiles
+quantiles_new_continuous = torch.tensor([[1.5, 2.2, 2.8, 3.5, 4.0]], dtype=torch.float32)
+calibrated_quantiles_new = continuous_calibrator(quantiles_new_continuous)
+
+print("\n--- Continuous Calibration Results (Example) ---")
+print(f"Uncalibrated Test Quantiles: {quantiles_new_continuous.numpy()}")
+print(f"Calibrated Test Quantiles:   {calibrated_quantiles_new.detach().numpy().round(3)}")
+          </code></pre>
+          <p class="mt-4">As shown in our paper and the <a href="https://github.com/shachideshpande/DistCal/blob/main/demo_blog_post.ipynb" target="_blank">full demo notebook</a>, applying these DistCal calibrators significantly improves standard calibration metrics (like discrete calibration scores or continuous check scores) while maintaining or even improving the original model's accuracy or MAE.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
-<section class="section" id="BibTeX">
-    <div class="container is-max-desktop content">
-      <h2 class="title">BibTeX</h2>
-      <pre><code>@InProceedings{pmlr-v162-kuleshov22a,
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Concluding Thoughts</h2>
+        <div class="content has-text-justified">
+          <p>
+            Accurate predictive uncertainties should maximize sharpness subject to being calibrated. Our work and the <strong>DistCal</strong> library provide a practical and theoretically grounded approach to achieve robust distribution calibration for a wide range of machine learning models.
+          </p>
+          <p>
+            By making distribution recalibration easy to implement for both classification and regression, we aim to promote its broader adoption. This can lead to more reliable and trustworthy AI systems, which is crucial as machine learning models are increasingly deployed in decision-critical applications.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section hero is-light" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3 has-text-centered">BibTeX</h2>
+        <pre><code>@InProceedings{pmlr-v162-kuleshov22a,
   title     = {Calibrated and Sharp Uncertainties in Deep Learning via Density Estimation},
   author    = {Kuleshov, Volodymyr and Deshpande, Shachi},
   booktitle = {Proceedings of the 39th International Conference on Machine Learning},
@@ -210,9 +264,12 @@ print(f"Calibrated continuous quantiles: {np.round(calibrated_continuous, 3)}")
   pdf       = {https://proceedings.mlr.press/v162/kuleshov22a/kuleshov22a.pdf},
   url       = {https://proceedings.mlr.press/v162/kuleshov22a.html}
 }</code></pre>
+      </div>
     </div>
+  </div>
 </section>
-<footer class="footer">
+
+  <footer class="footer">
   <div class="container">
     <div class="columns is-centered">
       <div class="column is-8">
