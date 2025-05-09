@@ -135,4 +135,98 @@
         <h2 class="title is-3">Conceptual Demo: Distribution Calibration in Action</h2>
         <div class="content">
           <p>This concise demo illustrates how pre-trained distribution calibrators can be applied to both discrete (classification) and continuous (regression) model outputs. It conceptualizes the usage of calibrators similar to those in the <code>DistCal</code> library, which would first be trained on a dedicated calibration dataset.</p>
-          <pre><code
+          <pre><code class="language-python">
+import numpy as np
+
+# --- Mock Uncalibrated Predictions from a Base Model ---
+# For a new test point:
+# Discrete (Classification): uncalibrated class probabilities (e.g., 3 classes)
+uncal_discrete_probs = np.array([[0.65, 0.25, 0.10]])
+# Continuous (Regression): uncalibrated quantiles (e.g., 0.1, 0.5, 0.9 levels)
+uncal_continuous_quantiles = np.array([[1.8, 2.9, 4.2]])
+
+# --- Placeholder Pre-Trained Calibrator Functions ---
+# These simulate applying calibrators from the 'DistCal' library
+# after they have been trained.
+
+def apply_discrete_calibrator(uncal_probs):
+    """Simulates applying a trained discrete distribution calibrator."""
+    print(f"Input discrete probabilities: {uncal_probs}")
+    # Example recalibration: slightly adjust and re-normalize
+    # A real calibrator learns a more complex transformation.
+    adjusted_probs = uncal_probs + np.array([[0.02, -0.01, -0.01]]) # Small learned shift
+    calibrated_probs = np.clip(adjusted_probs, 0.001, 0.999) # Ensure valid probs
+    calibrated_probs = calibrated_probs / np.sum(calibrated_probs, axis=1, keepdims=True)
+    return calibrated_probs
+
+def apply_continuous_calibrator(uncal_quantiles):
+    """Simulates applying a trained continuous distribution calibrator."""
+    print(f"Input continuous quantiles: {uncal_quantiles}")
+    # Example recalibration: adjust median and spread
+    # A real calibrator learns this based on phi(F) and tau.
+    # Here, phi(F) are the uncal_quantiles themselves.
+    # Let's say it learns to shift the median (middle quantile) slightly
+    # and adjust the outer quantiles to change the spread.
+    calibrated_q = uncal_quantiles.copy()
+    calibrated_q[0, 1] += 0.05 # Shift median
+    calibrated_q[0, 0] -= 0.1  # Expand lower tail
+    calibrated_q[0, 2] += 0.1  # Expand upper tail
+    return calibrated_q
+
+# --- Applying Discrete Calibration ---
+calibrated_discrete = apply_discrete_calibrator(uncal_discrete_probs)
+print(f"Calibrated discrete probabilities: {np.round(calibrated_discrete, 3)}\n")
+
+# --- Applying Continuous Calibration ---
+calibrated_continuous = apply_continuous_calibrator(uncal_continuous_quantiles)
+print(f"Calibrated continuous quantiles: {np.round(calibrated_continuous, 3)}")
+
+# Note: The actual 'DistCal' library (using torchuq) provides classes like
+# 'DiscreteDistCalibrator' and 'DistCalibrator'. These would be instantiated,
+# then trained on calibration data (e.g., discrete_cal.train(cal_probs, cal_labels)),
+# before being called on new data (e.g., calibrated_output = discrete_cal(new_probs)).
+# This demo focuses on the conceptual application post-training.
+          </code></pre>
+          <p>This example shows how, after training, a discrete calibrator adjusts class probabilities, and a continuous calibrator adjusts predicted quantiles to provide more reliable uncertainty estimates.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@InProceedings{pmlr-v162-kuleshov22a,
+  title     = {Calibrated and Sharp Uncertainties in Deep Learning via Density Estimation},
+  author    = {Kuleshov, Volodymyr and Deshpande, Shachi},
+  booktitle = {Proceedings of the 39th International Conference on Machine Learning},
+  pages     = {11683--11693},
+  year      = {2022},
+  editor    = {Chaudhuri, Kamalika and Jegelka, Stefanie and Song, Le and Sabato, Sivan and Niu, Gang and Szepesvari, Csaba},
+  volume    = {162},
+  series    = {Proceedings of Machine Learning Research},
+  month     = {17--23 Jul},
+  publisher = {PMLR},
+  pdf       = {https://proceedings.mlr.press/v162/kuleshov22a/kuleshov22a.pdf},
+  url       = {https://proceedings.mlr.press/v162/kuleshov22a.html}
+}</code></pre>
+    </div>
+</section>
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+            You are free to borrow the source code of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
