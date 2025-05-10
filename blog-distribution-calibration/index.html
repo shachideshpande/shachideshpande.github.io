@@ -107,6 +107,41 @@
   </div>
 </section>
 
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- <h2 class="title is-3 has-text-centered">Visualizing Calibration Approaches</h2> -->
+    <div class="columns is-centered is-vcentered">
+      <!-- <div class="column is-half"> -->
+        <figure class="image">
+          <img src="static/images/quantile_vs_distcal1.png" alt="Image 1 Description (e.g., Raw BNN Output or Overall Comparison)" style="max-width: 70%; margin: auto; display: block;">
+        </figure>
+      <!-- </div> -->
+
+      <!-- <div class="column is-half">
+        <div class="columns is-mobile">
+          <div class="column">
+            <figure class="image">
+              <img src="static/images/quantile_cal2.png" alt="Image 2 Description" style="max-width: 50%; margin: auto; display: block;">
+            </figure>
+          </div>
+        </div>
+        <div class="columns is-mobile">
+          <div class="column">
+            <figure class="image">
+              <img src="static/images/distcal3.png" alt="Image 3 Description" style="max-width: 50%; margin: auto; display: block;">
+            </figure>
+          </div>
+        </div>
+      </div> -->
+    </div>
+    <div class="content has-text-justified is-size-6">
+      <p class="mt-3 has-text-centered">
+        Top: Credible intervals (90% & 99%) from a Bayesian neural network on a time series forecasting task. The 90% credible interval around the forecast (red) is miscalibrated and inaccurate: half of the points are outside of it. Middle: Quantile recalibration (Kuleshov et al., 2018) relabels the 99% credible interval as a 90% interval, which now correctly contains 9/10 points (orange). Bottom: Our recalibration method enforces distribution calibration—the 90% interval is unchanged at points where it is narrow and expands where it is wide. This yields an improved and narrower calibrated 90% interval (green)
+      </p>
+    </div>
+  </div>
+</section>
+
 <section class="section hero is-light">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
@@ -126,27 +161,31 @@
   <div class="container is-max-desktop">
     <div class="columns is-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">What is Calibration? </h2>
+        <h2 class="title is-3"> Accurate Predictive Uncertainties in Machine Learning</h2>
         <div class="content has-text-justified">
           <p>
-            An accurate probabilistic forecast from a machine learning model should be both <strong>calibrated</strong> and <strong>sharp</strong>. Calibration means that if a model predicts a 90% confidence interval, the true outcome should indeed fall within that interval 90% of the time. Sharpness refers to how narrow or tight these intervals are. Unfortunately, standard training methods based on maximizing likelihood often result in models that are poorly calibrated – their confidence levels don't match real-world probabilities. This is a critical issue in fields like medicine or autonomous systems where decisions rely on accurate uncertainty estimates. Our work, implemented in the <a href="https://github.com/shachideshpande/DistCal" target="_blank" class="has-text-link">DistCal</a> library, demonstrates that calibration can be achieved by performing simple low-dimensional density estimation and implemented within a few lines of code without modifying the original model.
+            An accurate probabilistic forecast from a machine learning model should be both <strong>calibrated</strong> and <strong>sharp</strong>. Calibration means that if a model predicts a 90% confidence interval, the true outcome should indeed fall within that interval 90% of the time. Sharpness refers to how narrow or tight these intervals are. Unfortunately, standard training methods based on maximizing likelihood often result in models that are poorly calibrated – their confidence levels don't match real-world probabilities. In safety-critical applications like medicine or autonomous systems, where decisions rely on accurate uncertainty estimates, calibration is important. Our work, implemented in the <a href="https://github.com/shachideshpande/DistCal" target="_blank" class="has-text-link">DistCal</a> library, demonstrates that calibration can be achieved by performing simple low-dimensional density estimation and implemented within a few lines of code without modifying the original model.
           </p>
           <p>
-            To be more precise when discussing calibration, two key definitions from the literature are relevant:
+            Quantile calibration implies that whenever a model predicts the $p$-th quantile of a continuous outcome, the true value should fall below this prediction $p$ fraction of the time.  Distribution calibration requires that the entire predicted probability distribution over the outcome matches the true distribution of outcomes given that predicted distribution. 
+
+            Our DistCal library implements our methods to achieve distribution calibration, which also implies that quantile calibration will hold.
+
+            <!-- Two key definitions are relevant:
           </p>
           <p>
-            <strong>Quantile Calibration:</strong> This ensures that a model's predicted quantiles align with empirical observations. For instance, if a model predicts the $p$-th quantile of a continuous outcome, the true value should fall below this prediction $p$ fraction of the time. Formally, as Kuleshov et al. (2018) define it for regression:
+            <strong>Quantile Calibration:</strong> For instance, if a model predicts the $p$-th quantile of a continuous outcome, the true value should fall below this prediction $p$ fraction of the time. Formally, as Kuleshov et al. (2018) define it for regression:
             $$ \mathbb{P}(Y \le \text{CDF}_{F_{X}}^{-1}(p)) = p \quad \text{for all } p \in [0,1] $$
             where $F_{X} = H(X)$ is the forecast (a predictive distribution) from model $H$ for input $X$, and $\text{CDF}_{F_{X}}^{-1}(p)$ is its $p$-th quantile.
           </p>
           <p>
             <strong>Distribution Calibration:</strong> This is a stronger and more comprehensive notion. It requires that the entire predicted probability distribution $F(y)$ matches the true conditional distribution of outcomes $P(Y=y | F_X=F)$. As defined by Song et al. (2019), the condition is:
             $$ \mathbb{P}(Y=y | F_{X}=F) = f(y) \quad \text{for all } y \in \mathcal{Y}, F \in \Delta_{\mathcal{Y}} $$
-            where $F_{X}=H(X)$ is the random forecast and $f(y)$ is its probability density (for continuous $Y$) or mass function (for discrete $Y$). Essentially, if your model states that for certain inputs, the outcome follows a specific distribution $F$, then the actual outcomes for those inputs should indeed follow that exact distribution $F$.
+            where $F_{X}=H(X)$ is the random forecast and $f(y)$ is its probability density (for continuous $Y$) or mass function (for discrete $Y$).
           </p>
           <p>
              Our DistCal library focuses on achieving this robust distribution calibration, which also implies that quantile calibration will hold.
-          </p>
+          </p> -->
         </div>
 
         <h2 class="title is-3 mt-5">Our Approach: Recalibration as Density Estimation</h2>
@@ -158,10 +197,10 @@
             To make this tractable, we first define a featurization $\phi(F_x)$ that represents the original forecast $F_x$ with a low-dimensional vector (e.g., using its quantiles or parameters of the outcome distribution). The recalibrator $R$ then learns the mapping from these features $\phi(F_x)$ to a calibrated distribution over $Y$. This learning process minimizes a <strong>proper scoring rule</strong> on a dedicated calibration dataset, separate from the dataset used to train the model $H$. A proper scoring rule is minimized in expectation when the predicted distribution precisely matches the true data-generating distribution.
           </p>
           <p>
-            This general framework (<strong>Algorithm 1</strong> in our paper) is then specialized:
+            This general framework (<strong>Algorithm 1</strong> in our paper) is then specialized to accommodate regression (continuous outcomes) and classification (discrete outcomes) settings. 
           </p>
-          <p><strong>For Regression (Continuous Outcomes):</strong> We train $R$ to model the calibrated quantile function that uses the input $\phi(F_x)$ to output the $\tau$-th quantile of the calibrated distribution. The features $\phi(F_x)$ are a fixed number of equi-spaced quantiles from the original model $H$. $R$ is trained using the check score as proper loss function. (<strong>Algorithm 2</strong> in our paper).</p>
-          <p><strong>For Classification (Discrete Outcomes):</strong> The forecast $F_x$ is a vector of class probabilities. $R$ learns a mapping from these input probabilities to calibrated output probabilities, by minimizing the log-loss. (<strong>Algorithm 3</strong> in our paper).</p>
+          <!-- <p><strong>For Regression (Continuous Outcomes):</strong> We train $R$ to model the calibrated quantile function that uses the input $\phi(F_x)$ to output the $\tau$-th quantile of the calibrated distribution. The features $\phi(F_x)$ are a fixed number of equi-spaced quantiles from the original model $H$. $R$ is trained using the check score as proper loss function. (<strong>Algorithm 2</strong> in our paper).</p>
+          <p><strong>For Classification (Discrete Outcomes):</strong> The forecast $F_x$ is a vector of class probabilities. $R$ learns a mapping from these input probabilities to calibrated output probabilities, by minimizing the log-loss. (<strong>Algorithm 3</strong> in our paper).</p> -->
           <p>
             Compared to previous methods, our approach is simpler, more broadly applicable (e.g., not limited to Gaussian outputs), and directly targets the strong notion of distribution calibration.
           </p>
