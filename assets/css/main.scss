@@ -23,3 +23,8 @@ $max-content-width: {{ site.max_width }};
   "tabler-icons/tabler-icons-filled.scss",
   "tabler-icons/tabler-icons-outline.scss"
 ;
+// Fix for profile image layout shift on first load
+.profile {
+  // Reserve a square space for the image before it loads
+  aspect-ratio: 1 / 1;
+}
