@@ -38,6 +38,12 @@ body.sticky-bottom-footer {
   }
 }
 
+.news-scroll {
+  max-height: 30vh !important; /* A sensible height */
+  overflow-y: auto !important;
+  padding-right: 15px !important;
+}
+
 // TODO: redefine content layout.
 
 /******************************************************************************
