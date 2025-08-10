@@ -3,9 +3,9 @@
 # -----------------------------------------------------------------------------
 
 title: blank # the website title (if blank, full name will be used instead)
-first_name: Shachi
+first_name: Prachi Badarayani
 middle_name: 
-last_name: Deshpande (शची देशपांडे)
+last_name: (प्राची बादरायणी)
 email: 
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
   Based on [*folio](https://github.com/bogoli/-folio) design.
@@ -70,7 +70,7 @@ github_username: shachideshpande
 gitlab_username: # your GitLab user name
 twitter_username: ShachiDeshpande
 mastodon_username: # your mastodon instance+username in the format instance.tld/@username
-linkedin_username: shachi-deshpande-b8bb22b0
+linkedin_username: prachi-badarayani-b8bb22b0
 telegram_username: # your Telegram user name
 scholar_userid: pc-rLIAAAAAJ
 semanticscholar_id: # your Semantic Scholar ID
@@ -99,7 +99,7 @@ facebook_id: # your facebook id
 youtube_id: # your youtube channel id (youtube.com/@<youtube_id>)
 discord_id: # your discord id (18-digit unique numerical identifier)
 
-contact_note: You can also reach me at shachi@cs.cornell.edu
+contact_note: You can also reach me at shachi@cs.cornell.edu or prachi.badarayani@microsoft.com
 # -----------------------------------------------------------------------------
 # Analytics and search engine verification
 # -----------------------------------------------------------------------------
