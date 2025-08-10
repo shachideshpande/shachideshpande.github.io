@@ -1,10 +1,18 @@
 <script>
   window.addEventListener('load', function() {
-    if (typeof mediumZoom === 'function') {
-      mediumZoom('.img-zoomable', {
-        margin: { top: 0, right: 0, bottom: 0, left: 0 },
-        background: 'rgba(0, 0, 0, 0.9)',
-      });
-    }
+    // Wait 100 milliseconds to ensure the browser has finished rendering
+    setTimeout(function() {
+      // Re-initialize Medium Zoom on the profile picture
+      if (typeof mediumZoom === 'function') {
+        mediumZoom('.img-zoomable', {
+          margin: { top: 0, right: 0, bottom: 0, left: 0 },
+          background: 'rgba(0, 0, 0, 0.9)',
+        });
+      }
+
+      // Force a "resize" event to make all layout scripts re-calculate
+      window.dispatchEvent(new Event('resize'));
+
+    }, 100); // 100ms delay
   });
 </script>
